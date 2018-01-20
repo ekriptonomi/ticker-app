@@ -17,7 +17,7 @@ const FadeIn = styled.div`
 `;
 
 const Heading = ({ rank, name, symbol }) => 
-  <p className="heading">{ rank } {name} ({symbol}) </p>;
+  <p className="heading">#{ rank }. {name} ({symbol}) </p>;
 
 const Price = ({ value, currencySymbol }) => {
   const opts = { 
