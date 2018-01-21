@@ -18,7 +18,7 @@ const FadeIn = styled.div`
 
 const Icon = ({ symbol }) => {
   const source = require(`./icons/svg/color/${symbol.toLowerCase()}.svg`);
-  return <img className="icon" src={source} />;
+  return <img alt={symbol} className="icon" src={source} />;
 };
 
 const Heading = ({ rank, name, symbol }) => 
