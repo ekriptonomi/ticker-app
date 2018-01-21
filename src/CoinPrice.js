@@ -40,10 +40,13 @@ const Price = ({ value, currencySymbol }) => {
 
 const PercentChange = ({ value }) => {
   const formattedValue = `${value}%`;
-  
+  const isNegative = value < 0 ? true : false;
+  const caret = isNegative ? 'down' : 'up';
+  const colors = isNegative ? 'danger' : 'success';
+
   return (
-    <small className="is-size-7 has-text-success">
-      <span className="icon"><i className="fa fa-caret-up" aria-hidden="true"></i></span> 
+    <small className={`is-size-7 has-text-${colors}`}>
+      <span className="icon"><i className={`fa fa-caret-${caret}`} aria-hidden="true"></i></span> 
       {formattedValue}
     </small>
   );

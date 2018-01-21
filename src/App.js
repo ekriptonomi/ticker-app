@@ -26,25 +26,25 @@ class App extends Component {
     window.removeEventListener('resize', this.handleWindowSizeChange);
   }
 
-  handleWindowSizeChange = () => {
+  handleWindowSizeChange () {
     this.setState({ width: window.innerWidth });
-  };
+  }
 
-  fetchPrice = () => {
+  fetchPrice () {
     axios.get(URL).then(response => {
       const { data } = response;
       this.setState({ priceData: data });
     }).catch(error => { 
       throw new Error(error); 
     });
-  };
+  }
 
-  updateCounter = () => {
+  updateCounter () {
     const $count = this.state.counter < this.state.priceData.length ?
       this.state.counter+1 : 0;
 
     this.setState({ counter: $count });
-  };
+  }
 
   componentDidMount() {
     const millisInSecond = 1000;
@@ -74,7 +74,7 @@ class App extends Component {
         const props = { 
           rank: _.parseInt(rank), 
           price : _.parseInt(price),
-          percentage: _.parseInt(percentage),
+          percentage: parseFloat(percentage),
           name, 
           symbol, 
         };
