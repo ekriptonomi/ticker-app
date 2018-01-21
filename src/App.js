@@ -46,7 +46,13 @@ class App extends Component {
     }, 5000);
   }
 
-  priceGroup(groupCount) {
+  priceGroup() {
+    const { width } = this.state;
+    let groupCount = 4;
+    if (width <= 1400) groupCount = 3;
+    if (width <= 1000) groupCount = 2;
+    if (width <= 500) groupCount = 1;
+
     const { priceData, counter } = this.state;
     const priceDataChunk = _.chunk(priceData, groupCount);
 
@@ -59,9 +65,9 @@ class App extends Component {
         const props = { 
           rank: _.parseInt(rank), 
           price : _.parseInt(price),
+          percentage: _.parseInt(percentage),
           name, 
           symbol, 
-          percentage
         };
 
         return props;
@@ -77,12 +83,7 @@ class App extends Component {
       return <div className='has-text-grey-lighter has-text-centered'>Loading...</div>;
     }
 
-    const { width } = this.state;
-    const isMobile = width <= 500;
-
-    const groupCount = isMobile ? 1 : 4;
-
-    return this.priceGroup(groupCount);
+    return this.priceGroup();
   }
 
 
