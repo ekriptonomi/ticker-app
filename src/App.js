@@ -19,13 +19,7 @@ class App extends Component {
 
   componentWillMount() {
     window.addEventListener('resize', this.handleWindowSizeChange);
-    axios
-      .get(URL)
-      .then(response => {
-        const { data } = response;
-        this.setState({ priceData: data });
-      })
-      .catch(error => { throw new Error(error); });
+    this.fetchPrice();
   }
 
   componentWillUnmount() {
@@ -36,14 +30,29 @@ class App extends Component {
     this.setState({ width: window.innerWidth });
   };
 
+  fetchPrice = () => {
+    axios.get(URL).then(response => {
+      const { data } = response;
+      this.setState({ priceData: data });
+    }).catch(error => { 
+      throw new Error(error); 
+    });
+  };
+
+  updateCounter = () => {
+    const $count = this.state.counter < this.state.priceData.length ?
+      this.state.counter+1 : 0;
+
+    this.setState({ counter: $count });
+  };
 
   componentDidMount() {
-    setInterval(() => {
-      const $count = this.state.counter < this.state.priceData.length ?
-        this.state.counter+1 : 0;
+    const millisInSecond = 1000;
+    const fiveSeconds = millisInSecond * 5;
+    const tenMinutes = millisInSecond * 60 * 10;
 
-      this.setState({ counter: $count });
-    }, 5000);
+    setInterval(() => this.updateCounter(), fiveSeconds);
+    setInterval(() => this.fetchPrice(), tenMinutes);
   }
 
   priceGroup() {
