@@ -1,2 +1,4 @@
 @import '~bulma/css/bulma.css';
 @import '~font-awesome/css/font-awesome.min.css';
+
+img.icon { margin: 0.5rem;}
