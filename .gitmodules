@@ -1,0 +1,3 @@
+[submodule "src/icons"]
+	path = src/icons
+	url = https://github.com/cjdowner/cryptocurrency-icons
