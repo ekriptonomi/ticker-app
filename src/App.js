@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import _ from 'lodash';
+
 import CoinPrice from './CoinPrice';
 
 const URL = 'https://api.coinmarketcap.com/v1/ticker/?convert=IDR&limit=100';
@@ -11,19 +12,30 @@ class App extends Component {
 
     this.state = { 
       priceData: [],
-      counter: 0
+      counter: 0,
+      width: window.innerWidth
     };
   }
 
   componentWillMount() {
+    window.addEventListener('resize', this.handleWindowSizeChange);
     axios
       .get(URL)
       .then(response => {
         const { data } = response;
-        this.setState({ priceData: _.chunk(data, 4) });
+        this.setState({ priceData: data });
       })
       .catch(error => { throw new Error(error); });
   }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleWindowSizeChange);
+  }
+
+  handleWindowSizeChange = () => {
+    this.setState({ width: window.innerWidth });
+  };
+
 
   componentDidMount() {
     setInterval(() => {
@@ -34,9 +46,11 @@ class App extends Component {
     }, 5000);
   }
 
-  priceGroup() {
+  priceGroup(groupCount) {
     const { priceData, counter } = this.state;
-    const coinPrices = _.chain(priceData[counter])
+    const priceDataChunk = _.chunk(priceData, groupCount);
+
+    const coinPrices = _.chain(priceDataChunk[counter])
       .map(data => {
         const { rank, symbol, name, 
           price_idr: price, 
@@ -52,7 +66,7 @@ class App extends Component {
 
         return props;
       })
-      .map(data => <CoinPrice {...data} />)
+      .map((data, key) => <CoinPrice key={key} {...data} />)
       .value();
 
     return coinPrices;
@@ -63,7 +77,12 @@ class App extends Component {
       return <div className='has-text-grey-lighter has-text-centered'>Loading...</div>;
     }
 
-    return this.priceGroup();
+    const { width } = this.state;
+    const isMobile = width <= 500;
+
+    const groupCount = isMobile ? 1 : 4;
+
+    return this.priceGroup(groupCount);
   }
 
 
