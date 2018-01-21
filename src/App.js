@@ -26,9 +26,9 @@ class App extends Component {
     window.removeEventListener('resize', this.handleWindowSizeChange);
   }
 
-  handleWindowSizeChange () {
+  handleWindowSizeChange = () => {
     this.setState({ width: window.innerWidth });
-  }
+  };
 
   fetchPrice () {
     axios.get(URL).then(response => {
@@ -40,7 +40,7 @@ class App extends Component {
   }
 
   updateCounter () {
-    const $count = this.state.counter < this.state.priceData.length ?
+    const $count = this.state.counter < this.priceDataChunk().length - 1 ? 
       this.state.counter+1 : 0;
 
     this.setState({ counter: $count });
@@ -55,15 +55,20 @@ class App extends Component {
     setInterval(() => this.fetchPrice(), tenMinutes);
   }
 
-  priceGroup() {
+  priceDataChunk() {
     const { width } = this.state;
     let groupCount = 4;
     if (width <= 1400) groupCount = 3;
     if (width <= 1000) groupCount = 2;
     if (width <= 500) groupCount = 1;
 
-    const { priceData, counter } = this.state;
-    const priceDataChunk = _.chunk(priceData, groupCount);
+    const { priceData } = this.state;
+    return _.chunk(priceData, groupCount);
+  }
+
+  priceGroup() {
+    const { counter } = this.state;
+    const priceDataChunk = this.priceDataChunk();
 
     const coinPrices = _.chain(priceDataChunk[counter])
       .map(data => {
