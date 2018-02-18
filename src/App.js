@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import CoinPrice from './CoinPrice';
 
-const URL = 'https://api.coinmarketcap.com/v1/ticker/?convert=IDR&limit=100';
+const API_URL = 'https://api.coinmarketcap.com/v1/ticker/?convert=IDR&limit=100';
 
 class App extends Component {
   constructor(props) {
@@ -19,7 +19,6 @@ class App extends Component {
 
   componentWillMount() {
     window.addEventListener('resize', this.handleWindowSizeChange);
-    this.fetchPrice();
   }
 
   componentWillUnmount() {
@@ -30,13 +29,14 @@ class App extends Component {
     this.setState({ width: window.innerWidth });
   };
 
-  fetchPrice () {
-    axios.get(URL).then(response => {
+  async fetchPrice () {
+    try {
+      const response = await axios.get(API_URL);
       const { data } = response;
       this.setState({ priceData: data });
-    }).catch(error => { 
+    } catch (error) {
       throw new Error(error); 
-    });
+    }
   }
 
   updateCounter () {
@@ -46,13 +46,19 @@ class App extends Component {
     this.setState({ counter: $count });
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const millisInSecond = 1000;
     const fiveSeconds = millisInSecond * 5;
     const tenMinutes = millisInSecond * 60 * 10;
 
-    setInterval(() => this.updateCounter(), fiveSeconds);
-    setInterval(() => this.fetchPrice(), tenMinutes);
+    try {
+      await this.fetchPrice();
+      setInterval(() => this.updateCounter(), fiveSeconds);
+      setInterval(() => this.fetchPrice(), tenMinutes);
+    } catch (e) {
+      throw new Error(e); 
+    }
+
   }
 
   priceDataChunk() {
